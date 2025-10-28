@@ -18,50 +18,47 @@ function App() {
       setAnswer(response.data.answer);
     } catch (error) {
       console.error(error);
-      setAnswer("Something went wrong! Please try again.");
+      setAnswer("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-50 to-purple-100 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
-        <h1 className="text-3xl font-bold text-center mb-6 text-blue-600">
-          Chat AI 🤖
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+      <div className="bg-white w-full max-w-lg p-6 rounded-2xl shadow-lg">
+        <h1 className="text-2xl md:text-3xl font-semibold text-center mb-6 text-gray-800">
+          Chat AI
         </h1>
 
         <textarea
-          className="border border-gray-300 rounded-xl w-full p-3 mb-4 focus:ring-2 focus:ring-blue-400 focus:outline-none resize-none text-gray-700"
+          className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-400 focus:outline-none text-gray-700 resize-none mb-4"
+          rows="6"
+          placeholder="Ask something..."
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          rows="6"
-          placeholder="Ask me anything..."
         ></textarea>
 
         <button
-          className={`w-full py-3 rounded-xl font-semibold text-white transition-all ${
+          onClick={generateAnswer}
+          disabled={loading}
+          className={`w-full py-3 rounded-lg font-medium text-white transition ${
             loading
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-blue-500 hover:bg-blue-600 active:scale-95"
           }`}
-          onClick={generateAnswer}
-          disabled={loading}
         >
           {loading ? "Generating..." : "Generate Answer"}
         </button>
 
         {answer && (
-          <div className="mt-5 bg-gray-50 p-4 rounded-xl border border-gray-200">
-            <h2 className="font-semibold text-gray-700 mb-2">Answer:</h2>
-            <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">{answer}</p>
+          <div className="mt-5 p-4 border border-gray-200 rounded-lg bg-gray-50">
+            <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">
+              {answer}
+            </p>
           </div>
         )}
       </div>
-
-      <footer className="absolute bottom-3 text-sm text-gray-500">
-        Made with 💙 by <span className="font-medium text-blue-500">Manisha Banerjee</span>
-      </footer>
     </div>
   );
 }
