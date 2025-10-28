@@ -10,7 +10,7 @@ function App() {
     setAnswer("Loading...");
 
     try {
-      const response = await axios.post("http://localhost:5000/api/generate", {
+      const response = await axios.post("https://chat-ai-2-igqi.onrender.com/api/generate", {
         question: question
       });
 
