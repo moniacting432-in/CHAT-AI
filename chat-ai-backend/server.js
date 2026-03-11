@@ -1,7 +1,7 @@
-const express = require('express');
-const axios = require('axios');
-const cors = require('cors');
-const dotenv = require('dotenv');
+const express = require("express");
+const axios = require("axios");
+const cors = require("cors");
+const dotenv = require("dotenv");
 
 dotenv.config();
 
@@ -21,23 +21,37 @@ app.post("/api/generate", async (req, res) => {
   }
 
   try {
- const response = await axios.post(
-`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-{
-  contents: [
-    {
-      parts: [{ text: question }]
-    }
-  ]
-}
-);
+    const response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      {
+        contents: [
+          {
+            parts: [{ text: question }]
+          }
+        ]
+      }
+    );
 
-    const answer = response.data.candidates[0].content.parts[0].text;
+    // Safely extract answer
+    const answer =
+      response.data.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "No answer returned from the model.";
 
     res.json({ answer });
   } catch (error) {
     console.error("Error calling Gemini API:", error.response?.data || error.message);
-    res.status(500).json({ error: "Something went wrong while generating the answer" });
+
+    // Handle quota errors
+    if (error.response?.status === 429) {
+      return res
+        .status(429)
+        .json({ error: "Quota exceeded. Please try again later." });
+    }
+
+    res.status(500).json({
+      error: "Something went wrong while generating the answer.",
+      details: error.response?.data || error.message
+    });
   }
 });
 
